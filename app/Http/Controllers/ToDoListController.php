@@ -39,10 +39,10 @@ class ToDoListController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\TodoList  $todoList
+     * @param  \App\Models\ToDoList  $todoList
      * @return \Illuminate\Http\Response
      */
-    public function show(TodoList $todoList)
+    public function show(ToDoList $todoList)
     {
         return response()->json($todoList);
     }
@@ -51,11 +51,11 @@ class ToDoListController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Models\TodoList $todoList
+     * @param  \App\Models\ToDoList $todoList
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TodoList $todoList)
+    public function update(Request $request, ToDoList $todoList)
     {
         $request->validate([
             'name' => 'required',
@@ -69,7 +69,7 @@ class ToDoListController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\TodoList  $todoList
+     * @param  \App\Models\ToDoList  $todoList
      * @return \Illuminate\Http\Response
      */
     public function destroy(TodoList $todoList)
