@@ -17,7 +17,10 @@ class ToDoItemsController extends Controller
      */
     public function index(ToDoList $todolist)
     {
-        return response()->json($todolist->to_do_items);
+        $todoItems = $todolist->toDoItems()->get();
+        return response()->json($todoItems);
+
+        // return response()->json($todolist->to_do_items);
     }
 
     /**
@@ -50,8 +53,17 @@ class ToDoItemsController extends Controller
      * @param  \App\Models\ToDoItem  $todoitem
      * @return \Illuminate\Http\Response
      */
-    public function show(ToDoItem $todoitem)
+    public function show(ToDoList $todolist, ToDoItem $todoitem)
     {
+        // Check that the ToDoList belongs to the currently authenticated user
+        if ($todolist->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        
+        if ($todoitem->to_do_list_id !== $todolist->id) {
+            return response()->json(['message' => 'ToDoItem not found in this ToDoList'], 404);
+        }
+
         return response()->json($todoitem);
     }
 
