@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ToDoItems;
+use \Exception;
+use App\Models\ToDoList;
+use App\Models\ToDoItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ToDoItemsController extends Controller
 {
@@ -12,11 +15,9 @@ class ToDoItemsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ToDoList $todolist)
     {
-        $todoItems = ToDoItems::all();
-
-        return response()->json($todoItems);
+        return response()->json($todolist->to_do_items);
     }
 
     /**
@@ -25,58 +26,74 @@ class ToDoItemsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, ToDoList $todolist)
     {
-        $request->validate([
-            'name' => 'required',
-            'todo_list_id' => 'required',
+        $data = $request->validate([
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'completed' => 'nullable|boolean',
         ]);
     
-        ToDoItems::create($request->all());
-    
-        return response()->json(['message' => 'To Do Item created successfully']);
+        $data['to_do_list_id'] = $todolist->id;
+
+        try {
+            ToDoItem::create($data);
+            return response()->json(['message' => 'To Do Item created successfully']);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'To Do Item creation failed ' . $e->getMessage()], 500);       
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ToDoItems  $todoItems
+     * @param  \App\Models\ToDoItem  $todoitem
      * @return \Illuminate\Http\Response
      */
-    public function show($todoItems)
+    public function show(ToDoItem $todoitem)
     {
-        return response()->json($todoItems);
+        return response()->json($todoitem);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ToDoItems  $todoItems
+     * @param  \App\Models\ToDoItem  $todoItem
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ToDoItems $todoItems)
+    public function update(Request $request, ToDoItem $todoitem)
     {
         $request->validate([
-            'name' => 'required',
-            'completed' => 'required',
+            'title' => 'required',
+            'description' => 'nullable|string',
+            'completed' => 'nullable|boolean',
         ]);
     
-        $todoItems->update($request->all());
-    
-        return response()->json(['message' => 'To Do Items updated successfully']);
+        try {
+            $todoitem->update($request->all());
+                    return response()->json(['message' => 'To Do Item updated successfully']);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'To Do Item update failed' . $e->getMessage()], 500);       
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ToDoItems  $todoItem
+     * @param  \App\Models\ToDoItem  $todoitem
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ToDoItems $todoItem)
+    public function destroy(ToDoList $todolist)
     {
-        $todoItem->delete();
+        try {
+            $todolist->delete();
+            return response()->json(['message' => 'To Do Item deleted successfully'], 204);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'To Do List deletion failed', 'error' => $e->getMessage()], 500);       
+        }
     
-        return response()->json(['message' => 'To Do Item deleted successfully']);
+        return response()->json(['message' => 'Something went wrong with To Do List deletion.' ], 500);         
     }
+    
 }
