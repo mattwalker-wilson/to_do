@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'ToDoList'),
 
     /*
     |--------------------------------------------------------------------------
@@ -57,6 +57,10 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL'),
+
+    'storage_base_dir' => env('APP_STORAGE_BASE'),
+
+    'api_root' => env('API_ROOT', 'api'),
 
     /*
     |--------------------------------------------------------------------------

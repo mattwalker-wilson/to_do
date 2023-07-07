@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ToDoListController;
+use App\Http\Controllers\ToDoItemsController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +18,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('/', function () {
+        $phpVersion = phpversion();
+        return response()->json([
+            'message' => 'Welcome to the To Do List API! The PHP version is: ' . $phpVersion,
+            'status' => 'Connected'
+        ]);
 });
 
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
 
-Route::apiResource('todolists', 'App\Http\Controllers\ToDoListController');
+Route::middleware('jwt.verify')->group(function () {
+    Route::post('logout', [UserController::class, 'logout']);
+    Route::apiResource('user', UserController::class)->middleware('loggedin.user');
+    Route::apiResource('todolists', ToDoListController::class)->middleware('list.owner');
+    Route::get('todolists', [ToDoListController::class, 'index']);
+    Route::apiResource('todolists.todoitems', ToDoItemsController::class);    
+    // Route::apiResource('todoitems', ToDoItemsController::class);        
+});
