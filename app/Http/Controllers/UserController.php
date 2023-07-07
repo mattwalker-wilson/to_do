@@ -18,7 +18,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        $user = Auth::user(); 
+
         $users = User::with('toDoLists')
+        ->where('id', $user->id)
         ->get();
         return response()->json($users);
     }
@@ -106,7 +109,7 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\User  $user 
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
@@ -153,13 +156,13 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user 
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
             try {
-                $user = User::findOrFail($id);
+                // $user = User::findOrFail($id);
                 $user->delete();
                 return response()->json([
                     'message' => 'User deleted successfully',
@@ -171,5 +174,17 @@ class UserController extends Controller
                 ], 500);      
             }
             return response()->json(['message' => 'Something went wrong with User deletion.' ], 500);
+    }
+
+
+     /**
+     * Delete the token which logs out the current user
+     *
+     * @return \Illuminate\Http\Response
+     */   
+    public function logout()
+    {
+        auth()->logout();
+        return response()->json(['message' => 'Successfully logged out']);
     }
 }

@@ -65,6 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
         'list.owner' => \App\Http\Middleware\listOwner::class,
-        'user.owner' => \App\Http\Middleware\loggedInUser::class,
+        'loggedin.user' => \App\Http\Middleware\loggedInUser::class
     ];
 }

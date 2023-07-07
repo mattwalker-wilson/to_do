@@ -71,7 +71,7 @@ class ToDoItemsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ToDoItem  $todoItem
+     * @param  \App\Models\ToDoItem  $todoitem
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ToDoItem $todoitem)

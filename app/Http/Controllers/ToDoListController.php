@@ -16,8 +16,12 @@ class ToDoListController extends Controller
      */
     public function index()
     {
-
         $user = Auth::user(); 
+
+        // if ($user->id != $todolist->user_id) {
+        //     return response()->json(['message' => 'Unauthorized.'], 401);
+        // }
+
         $todoLists = ToDoList::where('user_id', $user->id)
         ->with('toDoItems')
         ->get();
