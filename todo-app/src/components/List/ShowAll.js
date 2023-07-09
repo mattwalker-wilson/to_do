@@ -64,6 +64,24 @@ function ShowAll() {
     }
   };
   
+  const deleteList = async (listId) => {
+    const token = sessionStorage.getItem('token');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    };
+  
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/todolists/${listId}`, config);
+      // After successful deletion, fetch the lists again to reflect changes in the UI
+      fetchLists();
+    } catch (error) {
+      console.error('An error occurred while deleting the list:', error);
+    }
+  };
+  
 
   useEffect(() => {
     fetchLists();
@@ -74,7 +92,14 @@ function ShowAll() {
       <NavBar />
       {lists.map(list => (
         <div key={list.id}>
-          <h2>
+          <h2>      
+            <span 
+                title='Click to delete list' 
+                onClick={() => {if (window.confirm('Are you sure you wish to delete this list and all the items on this list?')) deleteList(list.id)}}
+              >
+                <FaTrash style={{ color: "red" }} />
+              </span>
+            &nbsp;
             {list.name} 
             &nbsp;
             <Link title='Add To Do Item to this List' to={`/additem/${list.id}`}><FaPlus style={{ color: "blue" }} /></Link>
