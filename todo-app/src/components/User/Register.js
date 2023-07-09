@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useHistory} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -13,7 +13,7 @@ function Register() {
 
     const { name, email, password } = formData;
 
-    const history = useHistory(); // initialize useHistory to use it later
+    const navigate = useNavigate(); 
 
     const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -27,10 +27,13 @@ function Register() {
         const body = JSON.stringify({ name, email, password });
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/register', body, config);
+            
             console.log(response.data);
+            
             setStatusMessage(`User ${name} created successfully.`);
 
-            history.push('/todolists');
+            navigate('/todolists');
+
         } catch (error) {
             console.error(error);
             setStatusMessage('An error occurred. Please try again.');
@@ -40,7 +43,6 @@ function Register() {
     return (
         <div>
             <h1>Register</h1>
-            {/* Display the status message */}
             <p>{statusMessage}</p>
             <form onSubmit={(e) => onSubmit(e)}>
                 <div>

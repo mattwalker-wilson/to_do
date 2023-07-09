@@ -32,8 +32,7 @@ Route::post('login', [UserController::class, 'login']);
 Route::middleware('jwt.verify')->group(function () {
     Route::post('logout', [UserController::class, 'logout']);
     Route::apiResource('user', UserController::class)->middleware('loggedin.user');
-    Route::apiResource('todolists', ToDoListController::class)->middleware('list.owner');
-    Route::get('todolists', [ToDoListController::class, 'index']);
-    Route::apiResource('todolists.todoitems', ToDoItemsController::class);    
-    // Route::apiResource('todoitems', ToDoItemsController::class);        
+    Route::apiResource('todolists', ToDoListController::class)->except(['create'])->middleware('list.owner');
+    Route::post('todolists',  [ToDoListController::class, 'store']);
+    Route::apiResource('todolists.todoitems', ToDoItemsController::class);       
 });

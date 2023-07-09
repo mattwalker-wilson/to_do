@@ -41,7 +41,7 @@ class ToDoItemsController extends Controller
 
         try {
             ToDoItem::create($data);
-            return response()->json(['message' => 'To Do Item created successfully']);
+            return response()->json(['message' => 'To Do Item created successfully'],201);
         } catch (Exception $e) {
             return response()->json(['message' => 'To Do Item creation failed ' . $e->getMessage()], 500);       
         }
