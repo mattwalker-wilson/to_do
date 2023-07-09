@@ -71,17 +71,7 @@ function AddItem() {
             onChange={e => onChange(e)} 
           />
         </div>
-        <div>
-          <label>
-            Completed:
-            <input 
-              type="checkbox" 
-              name="completed" 
-              checked={completed} 
-              onChange={e => onChange(e)} 
-            />
-          </label>
-        </div>
+
         <input type="submit" value="Add Item" />
       </form>
     </div>
