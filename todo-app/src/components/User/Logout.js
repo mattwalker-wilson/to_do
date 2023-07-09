@@ -20,6 +20,7 @@ function Logout() {
                 
                 // Clear the token from sessionStorage
                 sessionStorage.removeItem('token');
+                navigate('/login');
             } catch (error) {
                 console.error(error);
             } finally {

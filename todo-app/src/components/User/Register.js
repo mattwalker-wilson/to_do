@@ -32,7 +32,7 @@ function Register() {
             
             setStatusMessage(`User ${name} created successfully.`);
 
-            navigate('/todolists');
+            navigate('/create');
 
         } catch (error) {
             console.error(error);

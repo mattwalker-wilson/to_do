@@ -9,7 +9,6 @@ function Login() {
     });
 
     const [statusMessage, setStatusMessage] = useState('');
-    const [token, setToken] = useState('');
 
     const { email, password } = formData;
 
@@ -30,7 +29,7 @@ function Login() {
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/login', body, config);
             
-            // setToken(response.data.access_token);  // Store the token into state
+
             sessionStorage.setItem('token', response.data.access_token); 
 
             console.log(response.data);

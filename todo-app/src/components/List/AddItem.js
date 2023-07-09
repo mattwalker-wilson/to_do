@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import NavBar  from '../Common/NavBar';
 import { useParams, useNavigate } from 'react-router-dom';
 
 function AddItem() {
@@ -49,6 +50,7 @@ function AddItem() {
 
   return (
     <div>
+      <NavBar />
       <h1>Add Item to List {id} </h1>
       <form onSubmit={e => onSubmit(e)}>
         <div>
