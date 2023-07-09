@@ -36,10 +36,13 @@ class ToDoListController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+
         $data = $request->validate([
-            'name' => 'required',
-            'user_id' => 'required|exists:users,id'
+            'name' => 'required'
         ]);
+
+        $data['user_id'] = $user->id;   
 
         try {
             $todolist = ToDoList::create($data);
