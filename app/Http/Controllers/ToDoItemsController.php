@@ -74,10 +74,19 @@ class ToDoItemsController extends Controller
      * @param  \App\Models\ToDoItem  $todoitem
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ToDoItem $todoitem)
+    public function update(Request $request, ToDoList $todolist, ToDoItem $todoitem)
     {
+
+        if ($todolist->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        if ($todoitem->to_do_list_id !== $todolist->id) {
+            return response()->json(['message' => 'ToDoItem not found in this ToDoList'], 404);
+        }
+
         $request->validate([
-            'title' => 'required',
+            'title' => 'nullable|string',
             'description' => 'nullable|string',
             'completed' => 'nullable|boolean',
         ]);
@@ -93,13 +102,22 @@ class ToDoItemsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\ToDoItem  $todoitem
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ToDoList $todolist)
+    public function destroy(Request $request, ToDoList $todolist, ToDoItem $todoitem)
     {
+        if ($todolist->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        if ($todoitem->to_do_list_id !== $todolist->id) {
+            return response()->json(['message' => 'ToDoItem not found in this ToDoList'], 404);
+        }
+
         try {
-            $todolist->delete();
+            $todoitem->delete();
             return response()->json(['message' => 'To Do Item deleted successfully'], 204);
         } catch (Exception $e) {
             return response()->json(['message' => 'To Do List deletion failed', 'error' => $e->getMessage()], 500);       
