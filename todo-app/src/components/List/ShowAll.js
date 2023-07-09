@@ -2,7 +2,7 @@ import React, { useState, useEffect   } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import NavBar  from '../Common/NavBar';
-import { FaTimes, FaCheck, FaPlus } from 'react-icons/fa';
+import { FaTimes, FaCheck, FaPlus, FaTrash, FaEdit } from 'react-icons/fa';
 
 
 function ShowAll() {
@@ -46,6 +46,25 @@ function ShowAll() {
     }
   };    
 
+  const deleteToDoItem = async (listId, itemId) => {
+    const token = sessionStorage.getItem('token');
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    };
+  
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/todolists/${listId}/todoitems/${itemId}`, config);
+      // After successful deletion, fetch the lists again to reflect changes in the UI
+      fetchLists();
+    } catch (error) {
+      console.error('An error occurred while deleting the item:', error);
+    }
+  };
+  
+
   useEffect(() => {
     fetchLists();
   }, [token]);
@@ -62,7 +81,12 @@ function ShowAll() {
           </h2>
           <ol>
             {list.to_do_items.map(item => (
-              <li key={item.id}><div className='text-lg text-bold'>{item.title}  &nbsp; 
+              <li key={item.id}><div className='text-lg text-bold'>
+                <span 
+                title='Click to delete' 
+                onClick={() => deleteToDoItem(list.id, item.id)}
+                ><FaTrash style={{ color: "red" }} /></span>
+              {item.title}  &nbsp; 
               <span title={ `Click to mark as ${item.completed === 0 ?'Completed':'Pending'}` } onClick={() => updateCompletedStatus(list.id, item.id, item.completed === 1 ? 0 : 1)}>
                   {item.completed === 1 ? <FaCheck style={{ color: "green" }} /> : <FaTimes style={{ color: "red" }} />}
               </span>
