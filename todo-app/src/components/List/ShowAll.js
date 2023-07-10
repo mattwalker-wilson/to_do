@@ -102,7 +102,7 @@ function ShowAll() {
             &nbsp;
             {list.name} 
             &nbsp;
-            <Link title='Edit List name' to={`/updateitem/${list.id}`}><FaEdit style={{ color: "gray" }} /></Link>          
+            <Link title='Edit List name' to={`/updatelist/${list.id}`}><FaEdit style={{ color: "gray" }} /></Link>          
             &nbsp;
             <Link title='Add To Do Item to this List' to={`/additem/${list.id}`}><FaPlus style={{ color: "blue" }} /></Link>
           </h2>

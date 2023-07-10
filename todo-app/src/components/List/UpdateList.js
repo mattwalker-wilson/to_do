@@ -3,29 +3,32 @@ import axios from 'axios';
 import NavBar from '../Common/NavBar';
 import { useNavigate, useParams } from 'react-router-dom';
 
-function Update() {
-  const { id } = useParams();
-  const token = sessionStorage.getItem('token');
-  const navigate = useNavigate();   
+function UpdateList() {
+    const [name, setName] = useState('');
+    const navigate = useNavigate();
+    const token = sessionStorage.getItem('token');
+    const { id } = useParams();
 
-  const [name, setName] = useState('');
+    const onSubmit = async (e) => {
+        e.preventDefault();
 
-  const updateListName = async (e) => {
-    e.preventDefault();
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                },
     };
 
     const body = JSON.stringify({ name });
 
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/todolists/${listid}`, body, config);
+        const response = await axios.patch(`http://127.0.0.1:8000/api/todolists/${id}`, body, config);
+        if (response.status === 200) {
+
         alert("To Do List successfully updated");
+
         navigate('/showall');
+        }
     } catch (error) {
       console.error('An error occurred while updating the list:', error);
     }
@@ -49,13 +52,13 @@ function Update() {
     };
 
     fetchList();
-  }, [token, listid]);
+  }, [token, id]);
 
   return (
     <div>
       <NavBar />
       <h1>Update List</h1>
-      <form onSubmit={updateListName}>
+      <form onSubmit={onSubmit}>
         <label>
           List Name:
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -66,4 +69,4 @@ function Update() {
   );
 }
 
-export default Update;
+export default UpdateList;

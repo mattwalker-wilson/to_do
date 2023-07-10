@@ -3,12 +3,12 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  
 
 import Login    from './components/User/Login';
-import Logout    from './components/User/Logout';
+import Logout   from './components/User/Logout';
 import Register from './components/User/Register' ;
 import ShowAll  from './components/List/ShowAll' ;
 import Create   from './components/List/Create' ;
 import AddItem  from './components/List/AddItem' ;
-import Update   from './components/List/Update' ;
+import UpdateList   from './components/List/UpdateList' ;
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
           <Route path='/create'       element={<Create />} />
           <Route path='/showall'      element={<ShowAll />} />
           <Route path='/additem/:id'  element={<AddItem />} />
-          <Route path='/update/:id'  element={<Update />} />          
+          <Route path='/updatelist/:id'   element={<UpdateList />} />          
         </Routes>
     </Router>
   );
