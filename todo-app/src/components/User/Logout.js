@@ -20,12 +20,12 @@ function Logout() {
                 
                 // Clear the token from sessionStorage
                 sessionStorage.removeItem('token');
-                navigate('/login');
+                navigate('/');
             } catch (error) {
                 console.error(error);
             } finally {
                 // Always navigate back to login, even if the logout request failed
-                navigate('/login');
+                navigate('/');
             }
         };
         logout();
