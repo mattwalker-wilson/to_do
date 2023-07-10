@@ -41,21 +41,26 @@ function Register() {
     };
 
     return (
-        <div>
+        <div className='App'>
             <h1>Register</h1>
             <p>{statusMessage}</p>
             <form onSubmit={(e) => onSubmit(e)}>
                 <div>
+                    <label htmlFor="name">Name: </label>  
                     <input type="text" placeholder="Name" name="name" value={name} onChange={(e) => onChange(e)} required />
                 </div>
                 <div>
+                    <label htmlFor="email">Email: </label>  
                     <input type="email" placeholder="Email" name="email" value={email} onChange={(e) => onChange(e)} required />
                 </div>
                 <div>
+                    <label htmlFor="password">Password: </label>  
                     <input type="password" placeholder="Password" name="password" value={password} onChange={(e) => onChange(e)} required />
                 </div>
                 <input type="submit" value="Register" />
             </form>
+
+            <p><a href="/">Login</a> once you have registered.</p>
         </div>
     );
 }
