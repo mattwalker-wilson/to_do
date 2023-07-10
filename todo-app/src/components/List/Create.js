@@ -45,7 +45,7 @@ function Create() {
         <form onSubmit={handleSubmit}>
           <label>
             List Name:
-            <input type="text" value={listName} onChange={handleChange} required />
+            <input type="text" name="name" id="name" value={listName} onChange={handleChange} required />
           </label>
           <input type="submit" value="Create List" />
         </form>

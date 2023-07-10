@@ -49,7 +49,7 @@ function Login() {
             <h1>Login</h1>
             <p>{statusMessage}</p>
             <form onSubmit={e => onSubmit(e)}>
-                <div>
+                <div> <label htmlFor="email">Email: </label>  
                     <input 
                         type="email" 
                         placeholder="Email" 
@@ -59,7 +59,7 @@ function Login() {
                         required 
                     />
                 </div>
-                <div>
+                <div> <label htmlFor="password">Password: </label>  
                     <input 
                         type="password" 
                         placeholder="Password" 
@@ -71,6 +71,7 @@ function Login() {
                 </div>
                 <input type="submit" value="Login" />
             </form>
+            <p>To use <strong>To Do Lists</strong> you must Login or <a href="/register">Register</a>.</p>
         </div>
     );
 }
