@@ -19,9 +19,11 @@ class listOwner
     {
         $todolist = $request->route('todolist');
 
-        if (Auth::id() !== $todolist->user_id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }        
+        if ($todolist) {
+            if (Auth::id() !== $todolist->user_id) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }       
+        } 
         return $next($request);
     }
 }
