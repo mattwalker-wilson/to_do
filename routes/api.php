@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ToDoListController;
-use App\Http\Controllers\ToDoItemsController;
+use App\Http\Controllers\ToDoListApiController;
+use App\Http\Controllers\ToDoItemsApiController;
 
 
 /*
@@ -29,10 +28,10 @@ Route::get('/', function () {
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
 
-Route::middleware('jwt.verify')->group(function () {
+Route::middleware(['auth:api'])->group(function () {
     Route::post('logout', [UserController::class, 'logout']);
     Route::apiResource('user', UserController::class)->middleware('loggedin.user');
-    Route::apiResource('todolists', ToDoListController::class)->except(['create'])->middleware('list.owner');
-    Route::post('todolists',  [ToDoListController::class, 'store']);
-    Route::apiResource('todolists.todoitems', ToDoItemsController::class);       
+    Route::apiResource('todolists', ToDoListApiController::class)->except(['create'])->middleware('list.owner');
+    Route::post('todolists',  [ToDoListApiController::class, 'store']);
+    Route::apiResource('todolists.todoitems', ToDoItemsApiController::class);
 });

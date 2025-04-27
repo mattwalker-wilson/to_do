@@ -17,6 +17,7 @@ public_html/hot
 
 storage/*.key
 .env
+.env.testing
 Homestead.yaml
 Homestead.json
 /.vagrant
@@ -44,8 +45,6 @@ yarn-error.log
 
 # Development Specific
 *.code-workspace
-*.psd 
+*.psd
 *.docx
 stuff.txt
-
-

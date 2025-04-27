@@ -12,7 +12,7 @@ function Login() {
 
     const { email, password } = formData;
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -27,10 +27,9 @@ function Login() {
         const body = JSON.stringify({ email, password });
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/login', body, config);
-            
+            const response = await axios.post('http://localhost:8000/api/login', body, config);
 
-            sessionStorage.setItem('token', response.data.access_token); 
+            sessionStorage.setItem('token', response.data.access_token);
 
             console.log(response.data);
 
@@ -49,24 +48,24 @@ function Login() {
             <h1>Login</h1>
             <p>{statusMessage}</p>
             <form onSubmit={e => onSubmit(e)}>
-                <div> <label htmlFor="email">Email: </label>  
-                    <input 
-                        type="email" 
-                        placeholder="Email" 
-                        name="email" 
-                        value={email} 
-                        onChange={e => onChange(e)} 
-                        required 
+                <div> <label htmlFor="email">Email: </label>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        name="email"
+                        value={email}
+                        onChange={e => onChange(e)}
+                        required
                     />
                 </div>
-                <div> <label htmlFor="password">Password: </label>  
-                    <input 
-                        type="password" 
-                        placeholder="Password" 
-                        name="password" 
-                        value={password} 
-                        onChange={e => onChange(e)} 
-                        required 
+                <div> <label htmlFor="password">Password: </label>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        value={password}
+                        onChange={e => onChange(e)}
+                        required
                     />
                 </div>
                 <input type="submit" value="Login" />

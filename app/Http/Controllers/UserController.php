@@ -4,21 +4,19 @@ namespace App\Http\Controllers;
 
 use \Exception;
 use App\Models\User;
+use App\Http\Requests\UserRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        $user = Auth::user(); 
+        $user = Auth::user();
 
         $users = User::with('toDoLists')
         ->where('id', $user->id)
@@ -26,24 +24,13 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    /**
-     * Register a new user.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function register(Request $request)
+    public function register(UserRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8'
+        $user = new User([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
-
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
 
         try {
             $user->save();
@@ -55,64 +42,98 @@ class UserController extends Controller
             return response()->json([
                 'message' => 'User registeration failed',
                 'error' => $e->getMessage()
-            ], 500);      
+            ], 500);
         }
-        return response()->json(['message' => 'Something went wrong with User registration.' ], 500);        
+        return response()->json(['message' => 'Something went wrong with User registration.' ], 500);
+    }
+
+
+    public function registerWeb(UserRequest $request): RedirectResponse
+    {
+        $user = new User([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        try {
+            $user->save();
+            Auth::login($user);
+            return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
+        } catch (Exception $e) {
+            return back()->withErrors([
+                'error' => 'User registration failed: ' . $e->getMessage()
+            ])->withInput();
+        }
     }
 
     /**
      * Display the specified resource.
-     *  
-     * @param  \App\Models\User  $user 
-     * @return \Illuminate\Http\Response
+     *
+     * @param User $user
+     * @return JsonResponse
      */
     public function show(User $user)
     {
-        $authUser = Auth::user();
+//        $authUser = Auth::user();
+        $authUser = User::findOrFail(4);
 
         if ($authUser->id != $user->id) {
             // If the authenticated user is not the user being accessed, return an unauthorized error
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        
+
         // return response()->json($user->with('toDoLists')->find($user->id));
         // use more effcient "lazy eager loading" instead of "eager loading"
         return response()->json($user->load('toDoLists'));
     }
 
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:8'
         ]);
 
+        Log::info($request->email . ' is trying to login');
         $credentials = $request->only('email', 'password');
-    
-        if (!$token = auth()->claims(['role' => 'user'])->attempt($credentials)) {
+
+        if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
+            Log::error('Unauthorized login attempt for email: ' . $request->email);
         }
-    
+
+
         return $this->respondWithToken($token);
     }
 
-    protected function respondWithToken($token)
+    public function loginWeb(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8'
+        ]);
+
+        if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->intended('/lists'); // Adjust to your desired route
+        }
+
+        return back()->withErrors([
+            'email' => 'Invalid credentials.'
+        ])->withInput();
+    }
+
+    protected function respondWithToken($token): JsonResponse
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user 
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): JsonResponse
     {
         $request->validate([
             'name'=> 'sometimes|max:40',
@@ -125,7 +146,7 @@ class UserController extends Controller
             if (Hash::check($request->password, $user->password)) {
                 return response()->json(['error' => 'New password must be different from the current one'], 400);
             }
-    
+
             // Hash and set the new password
             $user->password = Hash::make($request->password);
         }
@@ -133,7 +154,7 @@ class UserController extends Controller
         if ($request->has('name')) {
             $user->name = $request->name;
         }
-    
+
         if ($request->has('email')) {
             $user->email = $request->email;
         }
@@ -148,18 +169,13 @@ class UserController extends Controller
             return response()->json([
                 'message' => 'User update failed',
                 'error' => $e->getMessage()
-            ], 500);      
+            ], 500);
         }
         return response()->json(['message' => 'Something went wrong with User update.' ], 500);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user 
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
+
+    public function destroy(User $user): JsonResponse
     {
             try {
                 // $user = User::findOrFail($id);
@@ -171,7 +187,7 @@ class UserController extends Controller
                 return response()->json([
                     'message' => 'User deletion failed',
                     'error' => $e->getMessage()
-                ], 500);      
+                ], 500);
             }
             return response()->json(['message' => 'Something went wrong with User deletion.' ], 500);
     }
@@ -180,11 +196,18 @@ class UserController extends Controller
      /**
      * Delete the token which logs out the current user
      *
-     * @return \Illuminate\Http\Response
-     */   
-    public function logout()
+     * @return JsonResponse
+      */
+    public function logout(): JsonResponse
     {
         auth()->logout();
         return response()->json(['message' => 'Successfully logged out']);
     }
+
+    public function logoutWeb(): RedirectResponse
+    {
+        Auth::logout();
+        return redirect()->intended('/');
+    }
+
 }

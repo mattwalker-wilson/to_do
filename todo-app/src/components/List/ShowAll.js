@@ -2,14 +2,16 @@ import React, { useState, useEffect   } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import NavBar  from '../Common/NavBar';
+import { useNavigate } from 'react-router-dom';
 import { FaTimes, FaCheck, FaPlus, FaTrash, FaEdit } from 'react-icons/fa';
 
 
 function ShowAll() {
   const [lists, setLists] = useState([]);
   const token = sessionStorage.getItem('token');
+  const navigate = useNavigate();
 
-  const fetchLists = async () => {
+    const fetchLists = async () => {
     const token = sessionStorage.getItem('token');
     try {
       const response = await axios({
@@ -44,7 +46,7 @@ function ShowAll() {
     } catch (error) {
       console.error('An error occurred while updating the item:', error);
     }
-  };    
+  };
 
   const deleteToDoItem = async (listId, itemId) => {
     const token = sessionStorage.getItem('token');
@@ -54,7 +56,7 @@ function ShowAll() {
         'Authorization': `Bearer ${token}`,
       },
     };
-  
+
     try {
       await axios.delete(`http://127.0.0.1:8000/api/todolists/${listId}/todoitems/${itemId}`, config);
       // After successful deletion, fetch the lists again to reflect changes in the UI
@@ -63,7 +65,7 @@ function ShowAll() {
       console.error('An error occurred while deleting the item:', error);
     }
   };
-  
+
   const deleteList = async (listId) => {
     const token = sessionStorage.getItem('token');
     const config = {
@@ -72,7 +74,7 @@ function ShowAll() {
         'Authorization': `Bearer ${token}`,
       },
     };
-  
+
     try {
       await axios.delete(`http://127.0.0.1:8000/api/todolists/${listId}`, config);
       // After successful deletion, fetch the lists again to reflect changes in the UI
@@ -81,7 +83,7 @@ function ShowAll() {
       console.error('An error occurred while deleting the list:', error);
     }
   };
-  
+
 
   useEffect(() => {
     fetchLists();
@@ -92,28 +94,28 @@ function ShowAll() {
       <NavBar />
       {lists.map(list => (
         <div key={list.id}>
-          <h2>      
-            <span 
-                title='Click to delete list' 
+          <h2>
+            <span
+                title='Click to delete list'
                 onClick={() => {if (window.confirm('Are you sure you wish to delete this list and all the items on this list?')) deleteList(list.id)}}
               >
                 <FaTrash style={{ color: "red" }} />
               </span>
             &nbsp;
-            {list.name} 
+            {list.name}
             &nbsp;
-            <Link title='Edit List name' to={`/updatelist/${list.id}`}><FaEdit style={{ color: "gray" }} /></Link>          
+            <Link title='Edit List name' to={`/updatelist/${list.id}`}><FaEdit style={{ color: "gray" }} /></Link>
             &nbsp;
             <Link title='Add To Do Item to this List' to={`/additem/${list.id}`}><FaPlus style={{ color: "blue" }} /></Link>
           </h2>
           <ol>
             {list.to_do_items.map(item => (
               <li key={item.id}><div className='text-lg text-bold'>
-                <span 
-                title='Click to delete' 
+                <span
+                title='Click to delete'
                 onClick={() => deleteToDoItem(list.id, item.id)}
                 ><FaTrash style={{ color: "red" }} /></span>
-              {item.title}  &nbsp; 
+              {item.title}  &nbsp;
               <span title={ `Click to mark as ${item.completed === 0 ?'Completed':'Pending'}` } onClick={() => updateCompletedStatus(list.id, item.id, item.completed === 1 ? 0 : 1)}>
                   {item.completed === 1 ? <FaCheck style={{ color: "green" }} /> : <FaTimes style={{ color: "red" }} />}
               </span>
