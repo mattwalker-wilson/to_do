@@ -22,7 +22,7 @@ function UpdateList() {
     const body = JSON.stringify({ name });
 
     try {
-        const response = await axios.patch(`http://127.0.0.1:8000/api/todolists/${id}`, body, config);
+        const response = await axios.patch(`http://localhost:8000/api/todolists/${id}`, body, config);
         if (response.status === 200) {
 
         alert("To Do List successfully updated");
@@ -39,7 +39,7 @@ function UpdateList() {
       try {
         const response = await axios({
           method: 'get',
-          url: `http://127.0.0.1:8000/api/todolists/${id}`,
+          url: `http://localhost:8000/api/todolists/${id}`,
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,

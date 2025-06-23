@@ -16,7 +16,7 @@ function ShowAll() {
     try {
       const response = await axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/api/todolists',
+        url: 'http://localhost:8000/api/todolists',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -40,7 +40,7 @@ function ShowAll() {
     const body = JSON.stringify({ completed: completedStatus });
 
     try {
-      await axios.patch(`http://127.0.0.1:8000/api/todolists/${listId}/todoitems/${itemId}`, body, config);
+      await axios.patch(`http://localhost:8000/api/todolists/${listId}/todoitems/${itemId}`, body, config);
       // After successful update, fetch the lists again to reflect changes in the UI
       fetchLists();
     } catch (error) {
@@ -58,7 +58,7 @@ function ShowAll() {
     };
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/todolists/${listId}/todoitems/${itemId}`, config);
+      await axios.delete(`http://localhost:8000/api/todolists/${listId}/todoitems/${itemId}`, config);
       // After successful deletion, fetch the lists again to reflect changes in the UI
       fetchLists();
     } catch (error) {
@@ -76,7 +76,7 @@ function ShowAll() {
     };
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/todolists/${listId}`, config);
+      await axios.delete(`http://localhost:8000/api/todolists/${listId}`, config);
       // After successful deletion, fetch the lists again to reflect changes in the UI
       fetchLists();
     } catch (error) {

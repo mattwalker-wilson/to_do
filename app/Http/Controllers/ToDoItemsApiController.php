@@ -17,7 +17,7 @@ class ToDoItemsApiController extends Controller
 //         return response()->json($todolist->to_do_items);
     }
 
-    public function store(Request $request, ToDoList $todolist)
+    public function store(Request $request, ToDoList $todolist): JsonResponse
     {
         $data = $request->validate([
             'title' => 'required|string',
@@ -35,10 +35,17 @@ class ToDoItemsApiController extends Controller
         }
     }
 
+    /**
+     * Return a ToDoItem as JSON after verifying ownership and association.
+     *
+     * @param ToDoList $todolist
+     * @param ToDoItem $todoitem
+     * @return JsonResponse
+     */
     public function show(ToDoList $todolist, ToDoItem $todoitem): JsonResponse
     {
         // Check that the ToDoList belongs to the currently authenticated user
-        if ($todolist->user_id !== auth()->id()) {
+        if ($todolist->user_id !== auth('api')->id()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 

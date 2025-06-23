@@ -11,7 +11,7 @@
             <ul class="list-group">
                 @foreach($todoLists as $list)
                     <li class="list-group-item">
-                        <strong><a href="{{ route('lists.edit', $list) }}" title="Edit">{{ $list->name }}</a></strong>
+                        <strong><a href="{{ route('lists.edit', $list) }}" title="Edit">{{ $list->name }} {{ $list->id }}</a></strong>
 
                         <form action="{{ route('lists.destroy', $list) }}" method="POST" class="d-inline">
                             @csrf
@@ -19,10 +19,20 @@
                             <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</button>
                         </form>
 
+                        <!-- <form action="http://localhost:8000/lists/5" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete list 5</button>
+                        </form> -->
                         <ul class="mt-2">
                             @if($list->toDoItems->isNotEmpty())
                                 @foreach($list->toDoItems as $item)
                                     <li>
+                                    <form action="{{ route('lists.items.destroy', [$list, $item]) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
                                         <strong><a href="{{ route('lists.items.edit', [$list, $item]) }}" title="Edit">{{ $item->title }}</a></strong> - {{ $item->description }}
                                         @if($item->completed)
                                             <span class="badge bg-success align-content-end">Done</span>

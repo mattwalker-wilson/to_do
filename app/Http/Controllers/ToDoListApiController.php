@@ -7,22 +7,14 @@ use Exception;
 use App\Models\ToDoList;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ToDoListApiController extends Controller
 {
     public function index(): JsonResponse
     {
-//        $user = Auth::user();
-        $user =   User::findOrFail(4);
-        Log::info($user->id);
-        log::info("user is " . $user->name);
-        // $todolist = ToDoList::where('user_id', $user->id)->get();
-        // return response()->json($todolist);
-
-        // if ($user->id != $todolist->user_id) {
-        //     return response()->json(['message' => 'Unauthorized.'], 401);
-        // }
+       $user = Auth::user();
 
         $todoLists = ToDoList::where('user_id', $user->id)
         ->with('toDoItems')
@@ -32,8 +24,7 @@ class ToDoListApiController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-//        $user = Auth::user();
-        $user =   User::findOrFail(4);
+       $user = Auth::user();
 
         $data = $request->validate([
             'name' => 'required'
@@ -55,10 +46,10 @@ class ToDoListApiController extends Controller
 
     public function show(ToDoList $todolist): JsonResponse
     {
-//        $user = Auth::user();
-        $user =   User::findOrFail(4);
+       $user = Auth::user();
+
         if ($user->id != $todolist->user_id) {
-            return response()->json(['message' => 'Unauthorized.'], 401);
+            return response()->json(['message' => 'Unauthorized.'], 403);
         }
 
         // return response()->json($todolist->with('toDoItems')->find($todolist->id));

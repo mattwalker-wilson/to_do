@@ -25,9 +25,11 @@ class ToDoItemWebController extends Controller
     {
         $this->authorizeList($toDoList);
 
+        $data = $request->validated();
+
         $toDoList->toDoItems()->create([
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => $data['title'],
+            'description' => $data['description'],
             'completed' => $request->boolean('completed')
         ]);
 
@@ -71,7 +73,7 @@ class ToDoItemWebController extends Controller
 
         $toDoItem->delete();
 
-        return redirect()->route('lists.items.index', $toDoList)
+        return redirect()->route('lists.index', $toDoList)
             ->with('success', 'Item deleted.');
     }
 

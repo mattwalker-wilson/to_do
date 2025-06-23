@@ -30,7 +30,7 @@ function AddItem() {
     const body = JSON.stringify({ title, description, completed });
 
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/api/todolists/${id}/todoitems`, body, config);
+      const response = await axios.post(`http://localhost:8000/api/todolists/${id}/todoitems`, body, config);
       if (response.status === 201) {
         // Clear the input field after successful submission
         setFormData({

@@ -16,7 +16,7 @@ function Logout() {
             };
             try {
                 // Make logout request
-                await axios.post('http://127.0.0.1:8000/api/logout', {}, config);
+                await axios.post('http://localhost:8000/api/logout', {}, config);
                 
                 // Clear the token from sessionStorage
                 sessionStorage.removeItem('token');

@@ -12,7 +12,7 @@
 8. Visit "http://127.0.0.1:8000/api" If the API is accessible, you should see a welcome message,
 9. Open another GIT BASH Window
 10. CD into the sub directory "to_do/todo-app"    This is root directory for ReactJS scripts
-11. Start the ReactJS app with "npm start"
+11. Start the ReactJS app with "npm start" 
 12. "http://localhost:3000/register"  to register your email and a password.  The email does not need to be a real accessible email. No emails are ever sent to the address
 13. Having registered, you can login at "http://localhost:3000"
 14. Use the to nav menu to "Create New List" or visit "http://localhost:3000/create"

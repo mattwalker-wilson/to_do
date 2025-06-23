@@ -26,7 +26,7 @@ function Register() {
         };
         const body = JSON.stringify({ name, email, password });
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/register', body, config);
+            const response = await axios.post('http://localhost:8000/api/register', body, config);
             
             console.log(response.data);
             

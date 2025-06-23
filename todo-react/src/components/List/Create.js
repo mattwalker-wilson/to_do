@@ -13,7 +13,7 @@ function Create() {
     try {
       const response = await axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/api/todolists',
+        url: 'http://localhost:8000/api/todolists',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
